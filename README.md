@@ -1,4 +1,4 @@
-# Simulation for the 12 GeV MOLLER Experiment at Jefferson Lab
+# 12 GeV MOLLER Experiment at Jefferson Lab
 
 This repository contains the *runtime environment* for the remoll simulation framework.
 
@@ -21,9 +21,9 @@ module load singularity-2.4
 ```
 You can test whether this was successfull with `singularity --version`. You can add this line to your `.login` file and it will be run every time you log in.
 
-To install singularity v2.4 or higher on your own Linux, follow their [installation instructions](http://singularity.lbl.gov/install-linux). Other systems are supported as well, though your mileage may vary.
+To install singularity v2.4 or higher on your own Linux system, follow their [installation instructions](http://singularity.lbl.gov/install-linux). Other operating systems are supported as well, though your mileage may vary.
 
-## Running simulations
+## Running simulations (quickstart)
 To run the provided example macro (10k Møller scattering events with reasonable defaults), copy the following commands:
 ```
 git clone https://github.com/JeffersonLab/remoll-run.git
