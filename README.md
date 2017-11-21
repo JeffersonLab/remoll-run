@@ -33,4 +33,4 @@ The output ROOT file will be created in the `rootfiles` directory. The `./remoll
 
 ## Available docker and singularity images
 * The docker images are on [Docker Hub](https://hub.docker.com/r/jeffersonlab/remoll/tags/).
-* The sinularity images are on [Singularity Hub](https://www.singularity-hub.org/collections/241).
+* The singularity images are on [Singularity Hub](https://www.singularity-hub.org/collections/241).
