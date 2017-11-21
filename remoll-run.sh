@@ -39,6 +39,6 @@ fi
 latest=$(ls -t ./*remoll*.simg | head -n 1)
 
 # create output directory
-mkdir -p output
+mkdir -p rootfiles
 
-singularity run --bind "$(pwd)/output:/jlab/2.1/Linux_CentOS7.3.1611-x86_64-gcc4.8.5/remoll/rootfiles/" "$latest" "$absolutepath"
+singularity run --bind "$(pwd)/rootfiles:/jlab/2.1/Linux_CentOS7.3.1611-x86_64-gcc4.8.5/remoll/rootfiles/" "$latest" "$absolutepath"
