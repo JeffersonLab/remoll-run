@@ -1,5 +1,5 @@
 # Location of the geometry mother node
-# (use absolute path for custom geometry)
+# (this must be either an absolute path or in the geometry_sculpt relative directory)
 /remoll/setgeofile geometry_sculpt/mollerMother.gdml
 
 
@@ -7,7 +7,8 @@
 /run/initialize
 
 
-# Load the magnetic field
+# Load the magnetic field maps
+# (this must be either an absolute path or in the map_directory relative directory)
 /remoll/addfield map_directory/blockyHybrid_rm_3.0.txt
 /remoll/addfield map_directory/blockyUpstream_rm_1.1.txt
 
@@ -65,7 +66,8 @@
 # Set random number seed
 /remoll/seed 123456
 
-# Set output filename (must be absolute path or in rootfiles/ directory)
+# Set output filename
+# (this must be either an absolute path or in the rootfiles/ relative directory)
 /remoll/filename rootfiles/remollout.root
 
 
