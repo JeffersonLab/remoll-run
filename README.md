@@ -30,3 +30,7 @@ git clone https://github.com/JeffersonLab/remoll-run.git
 ./remoll-run.sh runexample.mac
 ```
 The output ROOT file will be created in the `rootfiles` directory. The `./remoll-run.sh` command will automatically download the most recent version of remoll.
+
+## Available docker and singularity images
+* The docker images are on [Docker Hub](https://hub.docker.com/r/jeffersonlab/remoll/tags/).
+* The singularity images are on [Singularity Hub](https://www.singularity-hub.org/collections/241).
