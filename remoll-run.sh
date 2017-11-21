@@ -1,6 +1,18 @@
 #!/bin/bash
 
-printf "Remoll Platform\\n"
+printf "Remoll runtime environment\\n"
+
+# update the remoll-run.sh script itself
+pushd `dirname $0` &> /dev/null
+git fetch
+LOCAL=$(git rev-parse @)
+REMOTE=$(git rev-parse @{u})
+BASE=$(git merge-base @ @{u})
+if [ $LOCAL != $REMOTE -a $LOCAL = $BASE ] ; then
+    read -t 5 -p "An update to remoll-run is available. Press ENTER within 5 seconds to update. "
+    if [ $? ] ; then git pull ; fi
+fi
+popd &> /dev/null && echo
 
 # display usage if no parameters are passed in
 if [ $# -eq 0 ]
