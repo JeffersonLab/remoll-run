@@ -22,7 +22,7 @@ if [ $# -eq 0 ]
 fi
 
 # expand relative path to macro to absolute path
-absolutepath=$(pwd)/$1
+absolutepath=$(readlink -f `pwd`)/$1
 
 # verify singularity is present
 command -v singularity >/dev/null 2>&1 || {
@@ -53,4 +53,4 @@ latest=$(ls -t ./*remoll*.simg | head -n 1)
 # create output directory
 mkdir -p rootfiles
 
-singularity run --bind "$(pwd)/rootfiles:/jlab/2.1/Linux_CentOS7.3.1611-x86_64-gcc4.8.5/remoll/rootfiles/" "$latest" "$absolutepath"
+singularity run --bind "$(readlink -f `pwd`)/rootfiles:/jlab/2.1/Linux_CentOS7.3.1611-x86_64-gcc4.8.5/remoll/rootfiles/" "$latest" "$absolutepath"
