@@ -2,27 +2,81 @@
 
 printf "Remoll runtime environment\\n"
 
-# update the remoll-run.sh script itself
-pushd `dirname $0` &> /dev/null
-git fetch
-LOCAL=$(git rev-parse @)
-REMOTE=$(git rev-parse @{u})
-BASE=$(git merge-base @ @{u})
-if [ $LOCAL != $REMOTE -a $LOCAL = $BASE ] ; then
-    read -t 5 -p "An update to remoll-run is available. Press ENTER within 5 seconds to update. "
-    if [ $? ] ; then git pull ; fi
-fi
-popd &> /dev/null && echo
-
 # display usage if no parameters are passed in
 if [ $# -eq 0 ]
   then
-    printf "usage: %s MACRO\\n" "$0"
+    printf "Usage: %s [-d|--debug] [-v|--verbose] [-u|--update] [-b <branch>|--branch <branch>] macro\\n" "$0"
     exit 0
 fi
 
+# define options
+OPTIONS=b:dvu
+LONGOPTIONS=branch:,debug,verbose,update
+
+# getopt setup
+getopt --test > /dev/null
+if [[ $? -ne 4 ]]; then
+    echo "Error: no getopt support on this system"
+    exit 1
+fi
+# parse options
+PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTIONS --name "$0" -- "$@")
+if [[ $? -ne 0 ]]; then
+    # e.g. $? == 1
+    #  then getopt has complained about wrong arguments to stdout
+    exit 2
+fi
+# read getopt's output
+eval set -- "$PARSED"
+
+# now read options
+while true; do
+    case "$1" in
+        -d|--debug)
+            debug=y
+            shift
+            ;;
+        -v|--verbose)
+            verbose=y
+            shift
+            ;;
+        -u|--update)
+            update=y
+            shift
+            ;;
+        -b|--branch)
+            branch="$2"
+            shift 2
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            echo "Unknown option"
+            exit 3
+            ;;
+    esac
+done
+
+
+# update the remoll-run.sh script itself
+pushd `dirname $0` &> /dev/null
+git fetch
+LOCAL=$(git rev-parse HEAD)
+REMOTE=$(git rev-parse @{u})
+BASE=$(git merge-base HEAD @{u})
+if [ $LOCAL != $REMOTE -a $LOCAL = $BASE ] ; then
+    echo "An update to remoll-run is available. Run with -u option to update remoll-run. "
+    if [ "$update" == "y" ] ; then
+        git pull
+    fi
+fi
+popd &> /dev/null
+
+bind="$bind --bind /site:/site"
 # expand relative path to macro to absolute path
-absolutepath=$(readlink -f `pwd`)/$1
+absolutepath=$(pwd)/$1
 
 # verify singularity is present
 command -v singularity >/dev/null 2>&1 || {
@@ -39,18 +93,33 @@ if [ "$(printf "%s\\n%s" "$requiredver" "$currentver" | sort -V | head -n1)" == 
     exit 1
 fi
 
+# set singularity pull dir
+PULLDIR=
+if [ -d /volatile ] ; then
+    export PULLDIR=/volatile/halla/parity/`whoami`/singularity
+    echo $PULLDIR
+    mkdir -p $PULLDIR
+fi
+
+shub=shub://JeffersonLab/remoll
+
 # download latest remoll image file
-# TODO: determine if this will get a newer image if available
-if ! singularity pull shub://JeffersonLab/remoll
+# TODO: determine if this will 6get a newer image if available
+if ! singularity pull $shub
 then
     printf >&2 "Failed to download remoll image file.\\n"
     exit 1
 fi
 
-# get latest image file
-latest=$(ls -t ./*remoll*.simg | head -n 1)
-
 # create output directory
 mkdir -p rootfiles
 
-singularity run --bind "$(readlink -f `pwd`)/rootfiles:/jlab/2.1/Linux_CentOS7.3.1611-x86_64-gcc4.8.5/remoll/rootfiles/" "$latest" "$absolutepath"
+bind="$bind --bind /apps:/apps"
+bind="$bind --bind /site:/site"
+bind="$bind --bind /cache:/cache"
+bind="$bind --bind /lustre:/lustre"
+bind="$bind --bind /volatile:/volatile"
+bind="$bind --bind $(pwd)/rootfiles:/jlab/2.1/Linux_CentOS7.3.1611-x86_64-gcc4.8.5/remoll/rootfiles/"
+
+# run singularity
+singularity run "$bind" "$shub" "$absolutepath"
