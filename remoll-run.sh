@@ -74,7 +74,7 @@ if [ $LOCAL != $REMOTE -a $LOCAL = $BASE ] ; then
 fi
 popd &> /dev/null
 
-bind="$bind --bind /site:/site"
+
 # expand relative path to macro to absolute path
 absolutepath=$(pwd)/$1
 
@@ -104,7 +104,7 @@ fi
 shub=shub://JeffersonLab/remoll
 
 # download latest remoll image file
-# TODO: determine if this will 6get a newer image if available
+# TODO: determine if this will get a newer image if available
 if ! singularity pull $shub
 then
     printf >&2 "Failed to download remoll image file.\\n"
@@ -114,12 +114,25 @@ fi
 # create output directory
 mkdir -p rootfiles
 
-bind="$bind --bind /apps:/apps"
-bind="$bind --bind /site:/site"
-bind="$bind --bind /cache:/cache"
-bind="$bind --bind /lustre:/lustre"
-bind="$bind --bind /volatile:/volatile"
-bind="$bind --bind $(pwd)/rootfiles:/jlab/2.1/Linux_CentOS7.3.1611-x86_64-gcc4.8.5/remoll/rootfiles/"
+binddirs=(
+    '/site:/site'
+    '/apps:/apps'
+    '/cache:/cache'
+    '/lustre:/lustre'
+    '/volatile:/volatile'
+    "$(pwd)/rootfiles:/jlab/2.1/Linux_CentOS7.3.1611-x86_64-gcc4.8.5/remoll/rootfiles/"
+)
+
+for i in "${binddirs[@]}"; do
+    localbindpoint="$(echo -e "${i}" | sed -rn 's/^(\/.+):\/.*$/\1/p')"
+    if [ -d "$localbindpoint" ]
+    then
+      echo "Binding $localbindpoint"
+      bind="$bind --bind ${i}"
+    fi
+done
+# trim leading whitespace from bind variable
+bind="$(echo -e "${bind}" | sed -e 's/^[[:space:]]*//')"
 
 # run singularity
-singularity run "$bind" "$shub" "$absolutepath"
+singularity run $bind "$shub" "$absolutepath"
