@@ -93,14 +93,6 @@ if [ "$(printf "%s\\n%s" "$requiredver" "$currentver" | sort -V | head -n1)" == 
     exit 1
 fi
 
-# set singularity pull dir
-PULLDIR=
-if [ -d /volatile ] ; then
-    export PULLDIR=/volatile/halla/parity/`whoami`/singularity
-    echo $PULLDIR
-    mkdir -p $PULLDIR
-fi
-
 shub=shub://JeffersonLab/remoll
 
 # download latest remoll image file
