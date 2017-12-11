@@ -1,6 +1,7 @@
 # 12 GeV MOLLER Experiment at Jefferson Lab
+[![Build Status](https://travis-ci.org/JeffersonLab/remoll-run.svg?branch=master)](https://travis-ci.org/JeffersonLab/remoll-run)
 
-This repository contains the *runtime environment* for the remoll simulation framework.
+This repository contains the *runtime environment* for the [remoll simulation framework](https://github.com/JeffersonLab/remoll).
 
 You can use this environment
 * if you are happy with the existing pre-programmed functionality in the latest master release and/or development branch (both are available as runtime environments),

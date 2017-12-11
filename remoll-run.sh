@@ -96,7 +96,6 @@ fi
 shub=shub://JeffersonLab/remoll
 
 # download latest remoll image file
-# TODO: determine if this will get a newer image if available
 if ! singularity pull $shub
 then
     printf >&2 "Failed to download remoll image file.\\n"
