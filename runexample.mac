@@ -55,8 +55,11 @@
 /remoll/beamcurr 85 microampere
 
 
-# Disable optical photons and processes
-/remoll/optical false
+# Disable optical photons and processes (default)
+#/remoll/physlist/optical/disable
+# Enable optical photons and processes (slower alternative)
+#/remoll/physlist/optical/enable
+
 
 # Make interactions with W, Cu, and Pb
 # faster rather than realistic materials
