@@ -12,10 +12,13 @@ before_install:
     - make
     - sudo make install
     - popd
-    - git checkout ${TRAVIS_BRANCH}
-    - git branch -u origin/${TRAVIS_BRANCH}
-    - git config branch.${TRAVIS_BRANCH}.remote origin
-    - git config branch.${TRAVIS_BRANCH}.merge refs/heads/${TRAVIS_BRANCH}
+    - |
+      if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then 
+        git checkout ${TRAVIS_BRANCH}
+        git branch -u origin/${TRAVIS_BRANCH}
+        git config branch.${TRAVIS_BRANCH}.remote origin
+        git config branch.${TRAVIS_BRANCH}.merge refs/heads/${TRAVIS_BRANCH}
+      fi
 
 script:
     - |
